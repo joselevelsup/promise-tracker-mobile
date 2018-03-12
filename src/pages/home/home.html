@@ -7,8 +7,19 @@
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <form (ngSubmit)="sendData()">
+      <ion-list>
+        <ion-item>
+          <ion-label fixed>Nome</ion-label>
+          <ion-input [(ngModel)]="sendingData.name" type="text" value="" name="name"></ion-input>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label fixed>Cor preferida</ion-label>
+          <ion-input type="text" [(ngModel)]="sendingData.color" name="word"></ion-input>
+        </ion-item>
+      </ion-list>
+      <button ion-button color="primary" block type="submit">Send</button>
+  </form>
+  <!-- <button ion-button color="primary" block (click)="loadData()">Load Data</button> -->
 </ion-content>
