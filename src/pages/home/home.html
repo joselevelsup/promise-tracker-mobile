@@ -11,19 +11,28 @@
         <ion-refresher-content refreshingText="Reload from API...">
         </ion-refresher-content>
     </ion-refresher>
-  <form (ngSubmit)="sendData()">
+  <form (ngSubmit)="getData()">
       <ion-list>
         <ion-item>
+          <ion-label fixed>Survey Code</ion-label>
+          <ion-input [(ngModel)]="code.number" type="number" name="code"></ion-input>
+        </ion-item>
+        <!-- <ion-item>
           <ion-label fixed>Nome</ion-label>
           <ion-input [(ngModel)]="sendingData.name" type="text" value="" name="name"></ion-input>
         </ion-item>
-      
+
         <ion-item>
           <ion-label fixed>Cor preferida</ion-label>
           <ion-input type="text" [(ngModel)]="sendingData.color" name="word"></ion-input>
-        </ion-item>
+        </ion-item> -->
       </ion-list>
       <button ion-button color="primary" block type="submit">Send</button>
   </form>
-  <button ion-button color="primary" block (click)="getData()">Load Data</button>
+  <button ion-button color="primary" block (click)="loadSurveys()">Load Data</button>
+  <ion-list>
+    <button ion-item *ngFor="let s of surveys" (click)="goToSurvey(survey.id)">
+      {{s.id}}
+    </button>
+  </ion-list>
 </ion-content>

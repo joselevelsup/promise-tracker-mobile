@@ -9,53 +9,61 @@ import { AboutPage } from "../about/about";
   templateUrl: 'home.html'
 })
 export class HomePage {
-  sendingData = {
-    name: "",
-    color: ""
+  code = {
+    number: null
   };
 
-    responses : any;
-    db: any;
+  surveys: any;
 
-    constructor(public navCtrl: NavController, private toastCtrl: ToastController, public api: ApiService) {
-        this.db = this.api.db();
-    }
+    constructor(public navCtrl: NavController, private toastCtrl: ToastController, public api: ApiService) {}
 
-    public getData(refresh?){
-        let self = this;
-        if(refresh){
-            this.api.getApiData().subscribe(
-                (res: any) => {
-                    // let localData = JSON.stringify(data);
-                    // self.api.insertLocalData(localData).then(() => {
-                    //     self.navCtrl.push(AboutPage);
-                    // }).catch((err) => {
-                    //     console.log(err);
-                    // });
-                    this.db.insert(res.payload);
-                    console.log(this.db.find());
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
-        } else {
-            console.log("Data already here");
+    getData(){
+      const self = this;
+      self.api.getSurveyData(this.code.number).subscribe(
+        (data) => {
+          self.api.insertFormData(data).then((data) => {
+            console.log(data);
+          }).catch((err) => {
+            console.log(err);
+          });
+        },
+        (err) => {
+          console.log(err);
         }
+      )
     }
 
-    loadRefresher(refresher){
-        this.getData(refresher);
+    loadSurveys(){
+      const self = this;
+      let surveys = [];
+        this.api.loadLocalForms().then((data) => {
+          for(var i = 0; i < data.rows.length; i++){
+            surveys.push({
+              id: data.rows.item(i).id,
+              survey_id: data.rows.item(i).survey_id,
+              form: data.rows.item(i).form
+            });
+          }
+          self.surveys = surveys;
+          console.log(data);
+          console.log(data.rows.item());
+        }).catch((err) => {
+          console.log(err);
+        });
     }
 
-    ionViewDidLoad(){
-        this.getData(true);
-    }
+    // ionViewDidLoad(){
+    //   this.api.loadLocalForms().then((data) => {
+    //     console.log(data);
+    //   }).catch((err) => {
+    //     console.log(err);
+    //   });
+    // }
 
-  sendData(){
-    this.api.sendData(this.sendingData).subscribe(
-      data => console.log(data),
-      err => console.log(err)
-    );
-  }
+  // sendData(){
+  //   this.api.sendData(this.sendingData).subscribe(
+  //     data => console.log(data),
+  //     err => console.log(err)
+  //   );
+  // }
 }

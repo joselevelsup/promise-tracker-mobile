@@ -10,12 +10,12 @@ export class AboutPage {
     db : any;
 
     constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService) {
-        this.db = this.api.db();
+        // this.db = this.api.db();
     }
 
   ionViewDidLoad() {
       console.log('ionViewDidLoad AboutPage');
-      console.log(this.db.find());
+      // console.log(this.db.find());
       // this.api.loadLocalData().then((data) => {
       //     console.log(data.rows.item(0));
       //     console.log(data.rows.item(1));
