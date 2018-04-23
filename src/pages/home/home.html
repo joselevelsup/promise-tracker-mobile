@@ -31,7 +31,7 @@
   </form>
   <button ion-button color="primary" block (click)="loadSurveys()">Load Data</button>
   <ion-list>
-    <button ion-item *ngFor="let s of surveys" (click)="goToSurvey(survey.id)">
+    <button ion-item *ngFor="let s of surveys" (click)="openSurvey(s.id)">
       {{s.id}}
     </button>
   </ion-list>
