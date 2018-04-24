@@ -20,12 +20,15 @@ export class HomePage {
     getData(){
       const self = this;
       self.api.getSurveyData(self.code.number).subscribe(
-        (data) => {
-          self.api.insertFormData(data).then((data) => {
-            self.loadSurveys(); //Loads Survey in when inserted.
-          }).catch((err) => {
-            console.log(err);
-          });
+          (data : any) => {
+              if(data.status == "success"){
+                  self.api.insertFormData(data.payload).then((data) => {
+                    self.loadSurveys(); //Loads Survey in when inserted.
+                  }).catch((err) => {
+                    console.log(err);
+                  });
+              }
+          
         },
         (err) => {
           console.log(err);
@@ -40,7 +43,8 @@ export class HomePage {
           console.log(data);
           for(var i = 0; i < data.rows.length; i++){
             surveys.push({
-              id: data.rows.item(i).id,
+                id: data.rows.item(i).id,
+                title: data.rows.item(i).title,
               survey_id: data.rows.item(i).survey_id
             });
           }

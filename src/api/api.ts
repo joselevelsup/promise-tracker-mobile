@@ -21,18 +21,18 @@ export default class ApiService {
   }
 
   public getSurveyData(id){
-    return this.http.get(`http://4e43ec06.ngrok.io/survey/${id}`);
+      return this.http.get(`http://6e5f7c8d.ngrok.io/surveys/${id}`);
   }
 
     getResponseData(){
-        return this.http.get("http://4e43ec06.ngrok.io/test-responses");
+        return this.http.get("http://6e5f7c8d.ngrok.io/test-responses");
     }
 
   public sendData(data){
     this.httpOptions.params = {
       answers: JSON.stringify(data)
     };
-    return this.http.post("http://4e43ec06.ngrok.io/test-responses", data, this.httpOptions);
+    return this.http.post("http://6e5f7c8d.ngrok.io/test-responses", data, this.httpOptions);
   }
 
 
@@ -44,7 +44,7 @@ export default class ApiService {
         }).then((db: SQLiteObject) => {
             db.executeSql('CREATE TABLE IF NOT EXISTS responses(id INTEGER PRIMARY KEY, body TEXT, survey_id INTEGER, synced INTEGER)', {})
             .then(() => {
-              return db.executeSql('CREATE TABLE IF NOT EXISTS surveys(id INTEGER PRIMARY KEY, survey_id INTEGER, form TEXT)', {});
+              return db.executeSql('CREATE TABLE IF NOT EXISTS surveys(id INTEGER PRIMARY KEY, title TEXT, survey_id INTEGER, form TEXT)', {});
             }).then(() => {
               return db.executeSql('CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY, location TEXT, synced INTEGER, response_id INTEGER, FOREIGN KEY(response_id) REFERENCES responses(id))', {});
             }).catch((err) => {
@@ -64,7 +64,7 @@ export default class ApiService {
     }
 
     public insertFormData(data){
-      return this.database.executeSql("INSERT INTO surveys(id, survey_id, form) VALUES (?, ?, ?)", [data.id, data.survey.survey_id, JSON.stringify(data.survey.form)])
+        return this.database.executeSql("INSERT INTO surveys(id, title, survey_id, form) VALUES (?, ?, ?, ?)", [data.id, data.title, data.campaign_id, JSON.stringify(data.inputs)])
     }
 
     public loadLocalForms(){
