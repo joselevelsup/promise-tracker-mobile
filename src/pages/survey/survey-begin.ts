@@ -14,20 +14,29 @@ import ApiService from "../../api/api";
 })
 export class SurveyBegin{
 
-  surveyData: any;
+  surveyData: any = {
+    title: null,
+    id: null
+  };
     constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService){}
 
-    ionViewDidLoad(){
-        const self = this;
-        const id = this.navParams.get("id");
-        this.api.loadOneForm(id).then((data) => {
-          self.surveyData = {
-            title: data.rows.item(0).title,
-            survey_id: data.rows.item(0).survey_id,
-            form: JSON.parse(data.rows.item(0).form)
-          };
-        }).catch((err) => {
-            console.log(err);
-        });
+    ionViewWillEnter(){
+      const self = this;
+      const id = this.navParams.get("id");
+      this.api.loadOneForm(id).then((data) => {
+        self.surveyData = {
+          title: data.rows.item(0).title,
+          code: data.rows.item(0).survey_code,
+          id: data.rows.item(0).id
+        };
+      }).catch((err) => {
+          console.log(err);
+      });
+    }
+
+    startSurvey(id){
+      this.navCtrl.setRoot("survey-detail", {
+        id: id
+      });
     }
 }

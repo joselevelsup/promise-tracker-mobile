@@ -13,7 +13,7 @@ export class NewCampaignModalPage {
   code = {
     number: null
   };
-  
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private view: ViewController, private api: ApiService) {}
 
   getData(){
@@ -21,7 +21,7 @@ export class NewCampaignModalPage {
     self.api.getSurveyData(self.code.number).subscribe(
         (data : any) => {
             if(data.status == "success"){
-                self.api.insertFormData(data.payload).then((data) => {
+                self.api.insertFormData(data.payload, self.code.number).then((data) => {
                   self.closeModal();
                 }).catch((err) => {
                   console.log(err);

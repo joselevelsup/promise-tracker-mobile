@@ -44,7 +44,7 @@ export default class ApiService {
         }).then((db: SQLiteObject) => {
             db.executeSql('CREATE TABLE IF NOT EXISTS responses(id INTEGER PRIMARY KEY, body TEXT, survey_id INTEGER, synced INTEGER)', {})
             .then(() => {
-              return db.executeSql('CREATE TABLE IF NOT EXISTS surveys(id INTEGER PRIMARY KEY, title TEXT, survey_id INTEGER, form TEXT)', {});
+              return db.executeSql('CREATE TABLE IF NOT EXISTS surveys(id INTEGER PRIMARY KEY, title TEXT, survey_id INTEGER, survey_code INTEGER, form TEXT)', {});
             }).then(() => {
               return db.executeSql('CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY, location TEXT, synced INTEGER, response_id INTEGER, FOREIGN KEY(response_id) REFERENCES responses(id))', {});
             }).catch((err) => {
@@ -63,8 +63,8 @@ export default class ApiService {
       return this.database.executeSql(`SELECT * FROM responses WHERE survey_id = ${surveyId}`, {});
     }
 
-    public insertFormData(data){
-        return this.database.executeSql("INSERT INTO surveys(id, title, survey_id, form) VALUES (?, ?, ?, ?)", [data.id, data.title, data.campaign_id, JSON.stringify(data.inputs)])
+    public insertFormData(data, code){
+        return this.database.executeSql("INSERT INTO surveys(id, title, survey_id, survey_code, form) VALUES (?, ?, ?, ?, ?)", [data.id, data.title, data.campaign_id, code, JSON.stringify(data.inputs)])
     }
 
     public loadLocalForms(){
