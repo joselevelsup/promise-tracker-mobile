@@ -1,39 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, Modal, ModalController } from 'ionic-angular';
 
 import ApiService from "../../api/api";
-import { SurveyDetailPage } from "../survey-detail/survey-detail";
+import { NewCampaignModalPage } from "../new-campaign-modal/new-campaign-modal";
 
+@IonicPage({
+    name: "home-page"
+})
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  code = {
-    number: null
-  };
 
   surveys: any;
 
-    constructor(public navCtrl: NavController, private toastCtrl: ToastController, public api: ApiService) {}
+    constructor(public navCtrl: NavController, private modal: ModalController, public api: ApiService) {}
 
-    getData(){
+    goToNewCampaignPage(){
       const self = this;
-      self.api.getSurveyData(self.code.number).subscribe(
-          (data : any) => {
-              if(data.status == "success"){
-                  self.api.insertFormData(data.payload).then((data) => {
-                    self.loadSurveys(); //Loads Survey in when inserted.
-                  }).catch((err) => {
-                    console.log(err);
-                  });
-              }
-          
-        },
-        (err) => {
-          console.log(err);
-        }
-      )
+      const newSurveyModal : Modal = this.modal.create(NewCampaignModalPage);
+
+      newSurveyModal.present();
+
+      newSurveyModal.onDidDismiss(() => {
+        self.loadSurveys();
+      });
     }
 
     loadSurveys(){
@@ -42,10 +34,10 @@ export class HomePage {
         this.api.loadLocalForms().then((data) => {
           console.log(data);
           for(var i = 0; i < data.rows.length; i++){
+            console.log(data.rows.item(i));
             surveys.push({
                 id: data.rows.item(i).id,
-                title: data.rows.item(i).title,
-              survey_id: data.rows.item(i).survey_id
+                title: data.rows.item(i).title
             });
           }
           self.surveys = surveys;
@@ -55,7 +47,7 @@ export class HomePage {
     }
 
     openSurvey(id){
-      this.navCtrl.push("survey-detail", {
+      this.navCtrl.setRoot("survey-begin", {
         "id": id
       });
     }
@@ -67,11 +59,4 @@ export class HomePage {
         self.loadSurveys();
       }, 3000);
     }
-
-  // sendData(){
-  //   this.api.sendData(this.sendingData).subscribe(
-  //     data => console.log(data),
-  //     err => console.log(err)
-  //   );
-  // }
 }

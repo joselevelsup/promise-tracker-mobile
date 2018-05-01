@@ -3,6 +3,7 @@ import {
   ErrorHandler,
   NgModule
 } from '@angular/core';
+import { RouterModule } from "@angular/router";
 import {
   IonicApp,
   IonicErrorHandler,
@@ -17,33 +18,58 @@ import { IonicStorageModule } from "@ionic/storage";
 import ApiService from "../api/api";
 
 import { MyApp } from './app.component';
+import { TabsPage } from "../pages/tabs/tabs";
+import { TabsPageModule } from "../pages/tabs/tabs.module";
 import { HomePage } from '../pages/home/home';
-import { AboutPage,  } from "../pages/about/about";
+import { HomePageModule } from '../pages/home/home.module';
+import { AboutPage } from "../pages/about/about";
+import { AboutPageModule } from "../pages/about/about.module";
+import { NewCampaignModalPage } from "../pages/new-campaign-modal/new-campaign-modal";
+import { NewCampaignModalPageModule } from "../pages/new-campaign-modal/new-campaign-modal.module";
+
+import {
+    SurveyBegin,
+    SurveyBeginModule,
+    SurveyDetailPage,
+    SurveyDetailPageModule,
+    SurveyEnd,
+    SurveyEndModule
+} from "../pages/survey";
 
 @NgModule({
   declarations: [
-    MyApp,
-      HomePage,
-      AboutPage
+      MyApp
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
       IonicModule.forRoot(MyApp),
-      IonicStorageModule.forRoot()
+      IonicStorageModule.forRoot(),
+      HomePageModule,
+      NewCampaignModalPageModule,
+      AboutPageModule,
+      TabsPageModule,
+      SurveyBeginModule,
+      SurveyDetailPageModule,
+      SurveyEndModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+      MyApp,
+      TabsPage,
       HomePage,
-      AboutPage
+      NewCampaignModalPage,
+      AboutPage,
+      SurveyBegin,
+      SurveyDetailPage,
+      SurveyEnd
   ],
   providers: [
     StatusBar,
       SplashScreen,
       SQLite,
-    ApiService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+      ApiService,
+      {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}

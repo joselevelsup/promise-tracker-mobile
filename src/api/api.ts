@@ -20,19 +20,19 @@ export default class ApiService {
     params: null
   }
 
-  public getSurveyData(id){
-      return this.http.get(`http://6e5f7c8d.ngrok.io/surveys/${id}`);
-  }
+    public getSurveyData(id){
+        return this.http.get("http://a91991ed.ngrok.io/surveys/"+id);
+    }
 
     getResponseData(){
-        return this.http.get("http://6e5f7c8d.ngrok.io/test-responses");
+        return this.http.get("http://a91991ed.ngrok.io/test-responses");
     }
 
   public sendData(data){
     this.httpOptions.params = {
       answers: JSON.stringify(data)
     };
-    return this.http.post("http://6e5f7c8d.ngrok.io/test-responses", data, this.httpOptions);
+    return this.http.post("http://a91991ed.ngrok.io/test-responses", data, this.httpOptions);
   }
 
 
@@ -68,7 +68,7 @@ export default class ApiService {
     }
 
     public loadLocalForms(){
-      return this.database.executeSql("SELECT id FROM surveys", {});
+      return this.database.executeSql("SELECT id, title FROM surveys", {});
     }
 
     public loadOneForm(id){

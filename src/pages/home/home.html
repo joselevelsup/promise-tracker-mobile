@@ -1,38 +1,33 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Promise Tracker
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <ion-refresher (ionRefresh)="loadRefresher($event)">
-        <ion-refresher-content refreshingText="Reload from API...">
-        </ion-refresher-content>
-    </ion-refresher>
-  <form (ngSubmit)="getData()">
-      <ion-list>
-        <ion-item>
-          <ion-label fixed>Survey Code</ion-label>
-          <ion-input [(ngModel)]="code.number" type="number" name="code"></ion-input>
-        </ion-item>
-        <!-- <ion-item>
-          <ion-label fixed>Nome</ion-label>
-          <ion-input [(ngModel)]="sendingData.name" type="text" value="" name="name"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label fixed>Cor preferida</ion-label>
-          <ion-input type="text" [(ngModel)]="sendingData.color" name="word"></ion-input>
-        </ion-item> -->
-      </ion-list>
-      <button ion-button color="primary" block type="submit">Send</button>
-  </form>
-  <button ion-button color="primary" block (click)="loadSurveys()">Load Data</button>
-  <ion-list>
-    <button ion-item *ngFor="let s of surveys" (click)="openSurvey(s.id)">
-      {{s.id}}
-    </button>
-  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12>
+        <div class="center-title">
+          <h3><ion-icon name="clipboard"></ion-icon> My campaigns</h3>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <button ion-button color="primary" block (click)="goToNewCampaignPage();"><ion-icon name="add-circle"></ion-icon>  Get New Campaign</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <ion-list>
+            <button ion-item *ngFor="let s of surveys" (click)="openSurvey(s.id)">
+                {{s.title}}
+            </button>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

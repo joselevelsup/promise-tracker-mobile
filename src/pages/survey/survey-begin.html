@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Promise Tracker</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12>
+        <h3 surveyTitle>
+          {{surveyData.title}}
+        </h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-4>
+        <br/>
+      </ion-col>
+      <ion-col col-4>
+        Campaign Code:
+        <!-- {{surveyData.code}} -->
+      </ion-col>
+      <ion-col col-4>
+        <br/>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-2>
+        <br/>
+      </ion-col>
+      <ion-col col-2>
+        <ion-item>
+          <ion-label>Allow my location to be recorded</ion-label>
+          <ion-checkbox color="primary" checked="false" [(ngModel)]="location"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+        <br/>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</ion-content>
