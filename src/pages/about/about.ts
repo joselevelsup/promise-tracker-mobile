@@ -1,28 +1,25 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import ApiService from "../../api/api";
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
+/**
+ * Generated class for the AboutPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+
+@IonicPage()
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html',
 })
 export class AboutPage {
-    db : any;
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService) {
-        this.db = this.api.db();
-    }
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  }
 
   ionViewDidLoad() {
-      console.log('ionViewDidLoad AboutPage');
-      console.log(this.db.find());
-      // this.api.loadLocalData().then((data) => {
-      //     console.log(data.rows.item(0));
-      //     console.log(data.rows.item(1));
-      //     console.log(data.rows.item(2));
-      // }).catch((err) => {
-      //     console.log(err);
-      // })
+    console.log('ionViewDidLoad AboutPage');
   }
 
 }

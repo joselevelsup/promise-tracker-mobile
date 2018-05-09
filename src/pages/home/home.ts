@@ -1,61 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, Modal, ModalController } from 'ionic-angular';
 
 import ApiService from "../../api/api";
-import { AboutPage } from "../about/about";
+import { NewCampaignModalPage } from "../new-campaign-modal/new-campaign-modal";
 
+@IonicPage({
+    name: "home-page"
+})
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  sendingData = {
-    name: "",
-    color: ""
-  };
 
-    responses : any;
-    db: any;
+  surveys: any;
 
-    constructor(public navCtrl: NavController, private toastCtrl: ToastController, public api: ApiService) {
-        this.db = this.api.db();
+    constructor(public navCtrl: NavController, private modal: ModalController, public api: ApiService) {}
+
+    goToNewCampaignPage(){
+      const self = this;
+      const newSurveyModal : Modal = this.modal.create(NewCampaignModalPage);
+
+      newSurveyModal.present();
+
+      newSurveyModal.onDidDismiss(() => {
+        self.loadSurveys();
+      });
     }
 
-    public getData(refresh?){
-        let self = this;
-        if(refresh){
-            this.api.getApiData().subscribe(
-                (res: any) => {
-                    // let localData = JSON.stringify(data);
-                    // self.api.insertLocalData(localData).then(() => {
-                    //     self.navCtrl.push(AboutPage);
-                    // }).catch((err) => {
-                    //     console.log(err);
-                    // });
-                    this.db.insert(res.payload);
-                    console.log(this.db.find());
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
-        } else {
-            console.log("Data already here");
-        }
+    loadSurveys(){
+      const self = this;
+      let surveys = [];
+        this.api.loadLocalForms().then((data) => {
+          console.log(data);
+          for(var i = 0; i < data.rows.length; i++){
+            console.log(data.rows.item(i));
+            surveys.push({
+                id: data.rows.item(i).id,
+                title: data.rows.item(i).title
+            });
+          }
+          self.surveys = surveys;
+        }).catch((err) => {
+          console.log(err);
+        });
     }
 
-    loadRefresher(refresher){
-        this.getData(refresher);
+    openSurvey(id){
+      this.navCtrl.push("survey-begin", {
+        "id": id
+      });
     }
 
+    //Loads after a certain amount of time. Can not open the DB immediately because Angular would read the DB object as undefined
     ionViewDidLoad(){
-        this.getData(true);
+      const self = this;
+      setTimeout(() => {
+        self.loadSurveys();
+      }, 3000);
     }
-
-  sendData(){
-    this.api.sendData(this.sendingData).subscribe(
-      data => console.log(data),
-      err => console.log(err)
-    );
-  }
 }

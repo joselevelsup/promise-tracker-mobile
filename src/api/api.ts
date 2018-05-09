@@ -2,15 +2,14 @@ import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { SQLite, SQLiteObject } from "@ionic-native/sqlite";
 
-import * as Loki from "lokijs";
-
 @Injectable()
 export default class ApiService {
+    database: SQLiteObject;
     constructor(
         private http: HttpClient,
         private sqlite: SQLite
     ){
-        //this.dbSetup();
+        this.dbSetup();
     }
 
   private httpOptions = {
@@ -21,48 +20,60 @@ export default class ApiService {
     params: null
   }
 
-    getApiData(){
-        return this.http.get("http://8b6a862c.ngrok.io/test-responses");
+    public getSurveyData(id){
+        return this.http.get("http://6b2de3db.ngrok.io/surveys/"+id);
     }
 
-  public sendData(data){
+    getResponseData(){
+        return this.http.get("http://6b2de3db.ngrok.io/test-responses");
+    }
+
+  public sendSurveyAnswers(data){
     this.httpOptions.params = {
       answers: JSON.stringify(data)
     };
-    return this.http.post("http://355c8d90.ngrok.io/test-responses", data, this.httpOptions);
+    return this.http.post("http://a91991ed.ngrok.io/test-responses", data, this.httpOptions);
   }
 
-    public db(){
-        let rDb = new Loki("responses.json");
-        let resp = rDb.addCollection("responses");
 
-        return resp;
+
+    private dbSetup(){
+        return this.sqlite.create({
+            name: "responses.db",
+            location: "default"
+        }).then((db: SQLiteObject) => {
+            db.executeSql('CREATE TABLE IF NOT EXISTS responses(id INTEGER PRIMARY KEY, body TEXT, survey_id INTEGER, synced INTEGER)', {})
+            .then(() => {
+              return db.executeSql('CREATE TABLE IF NOT EXISTS surveys(id INTEGER PRIMARY KEY, title TEXT, survey_id INTEGER, survey_code INTEGER, form TEXT)', {});
+            }).then(() => {
+              return db.executeSql('CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY, location TEXT, synced INTEGER, response_id INTEGER, FOREIGN KEY(response_id) REFERENCES responses(id))', {});
+            }).catch((err) => {
+                console.log(err);
+            });
+
+            this.database = db;
+        })
     }
 
+    public insertResponseData(data){
+      let responses = JSON.stringify(data.body);
+      return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
+    }
 
+    public loadResponseData(surveyId){
+      return this.database.executeSql(`SELECT * FROM responses WHERE survey_id = ${surveyId}`, {});
+    }
 
-    // private dbSetup(){
-    //     return this.sqlite.create({
-    //         name: "responses.db",
-    //         location: "default"
-    //     }).then((db: SQLiteObject) => {
-    //         db.executeSql('CREATE TABLE IF NOT EXISTS responses(id INTEGER PRIMARY KEY, response TEXT)', {}).then(() => {}).catch((err) => {
-    //             console.log(err);
-    //         });
+    public insertFormData(data, code){
+        return this.database.executeSql("INSERT INTO surveys(id, title, survey_id, survey_code, form) VALUES (?, ?, ?, ?, ?)", [data.id, data.title, data.campaign_id, code, JSON.stringify(data.inputs)])
+    }
 
-    //         return db;
-    //     })
-    // }
+    public loadLocalForms(){
+      return this.database.executeSql("SELECT id, title FROM surveys", {});
+    }
 
-    // public insertLocalData(data){
-    //     return this.dbSetup().then((db: SQLiteObject) => {
-    //         return db.executeSql("INSERT INTO responses(response) VALUES(?)", [data])
-    //     });
-    // }
+    public loadOneForm(id){
+      return this.database.executeSql(`SELECT * FROM surveys WHERE id=${id}`, {});
+    }
 
-    // public loadLocalData(){
-    //     return this.dbSetup().then((db: SQLiteObject) => {
-    //         return db.executeSql("select * from responses", {});
-    //     })
-    // }
 }

@@ -1,0 +1,134 @@
+<ion-header>
+
+  <ion-navbar hideBackButton="true">
+    <ion-title>Promise Tracker</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12>
+        <h3 class="surveyTitle">
+          {{title}}
+        </h3>
+        <hr/>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-slides #slides [initialSlide]="1">
+    <ion-slide *ngFor="let q of questions">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-12>
+            <div>
+              {{q.label}}
+            </div>
+            <div *ngIf="q.input_type == 'select1'">
+              <ion-list radio-group [(ngModel)]="answers[q.id]">
+                <ion-list-header>
+                  Select one:
+                </ion-list-header>
+                <ion-item *ngFor="let o of q.options" no-lines>
+                  <ion-label>{{o}}</ion-label>
+                  <ion-radio [value]="o"></ion-radio>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'select'">
+              <ion-list [(ngModel)]="answers[q.id]">
+                <ion-list-header>
+                  Select all that apply:
+                </ion-list-header>
+                <ion-item *ngFor="let o of q.options">
+                  <ion-label>{{o}}</ion-label>
+                  <ion-checkbox></ion-checkbox>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'text'">
+              <ion-list>
+                <ion-item>
+                  <ion-input type="text" [(ngModel)]="answers[q.id]" placeholder="{{q.label}}"></ion-input>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'number'">
+              <ion-list>
+                <ion-item>
+                  <ion-input type="number"></ion-input>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'location'">
+              <ion-list>
+                <ion-item>
+                  <button (click)="getLocation()" ion-button block icon-start color="primary">
+                    <ion-icon name="locate"></ion-icon>
+                    Get Current Location
+                  </button>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'image'">
+              <button (click)="openCamera()" ion-button block color="primary">
+                Take a picture
+              </button>
+              <div class="image-container" *ngIf="answers.image != null || answers.image != 'undefined'">
+                <ion-img src="{{answers.image}}"></ion-img>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-slide>
+    <ion-slide>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-12>
+            <p>
+              <ion-icon name="checkmark-circle"></ion-icon>
+              All set!
+            </p>
+            <p>
+              You have Completed the Survey.
+            </p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-12>
+            <button ion-button button-block (click)="sendAnswers()" color="secondary">Submit now</button>
+            <button ion-button button-block (click)="saveAnswers()" clear>Submit later</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col col-4>
+          <button (click)="previousSlide()" ion-button block icon-start color="dark" clear>
+            <ion-icon name="ios-arrow-back"></ion-icon>
+            Back
+          </button>
+        </ion-col>
+        <ion-col col-4>
+          <button ion-button block icon-start color="dark" clear>
+            <ion-icon name="close"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-4>
+          <button (click)="nextSlide()" ion-button block icon-end color="primary">
+            Next
+            <ion-icon name="ios-arrow-forward"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
