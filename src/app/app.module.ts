@@ -3,7 +3,6 @@ import {
   ErrorHandler,
   NgModule
 } from '@angular/core';
-import { RouterModule } from "@angular/router";
 import {
   IonicApp,
   IonicErrorHandler,
@@ -13,7 +12,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { SQLite } from "@ionic-native/sqlite";
+import { Geolocation } from "@ionic-native/geolocation";
+import { Camera } from "@ionic-native/camera";
 import { IonicStorageModule } from "@ionic/storage";
+import { AndroidPermissions } from "@ionic-native/android-permissions";
 
 import ApiService from "../api/api";
 
@@ -68,6 +70,9 @@ import {
     StatusBar,
       SplashScreen,
       SQLite,
+      Geolocation,
+      AndroidPermissions,
+      Camera,
       ApiService,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

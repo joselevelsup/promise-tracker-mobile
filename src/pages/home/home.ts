@@ -47,7 +47,7 @@ export class HomePage {
     }
 
     openSurvey(id){
-      this.navCtrl.setRoot("survey-begin", {
+      this.navCtrl.push("survey-begin", {
         "id": id
       });
     }

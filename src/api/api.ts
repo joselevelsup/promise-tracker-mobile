@@ -21,14 +21,14 @@ export default class ApiService {
   }
 
     public getSurveyData(id){
-        return this.http.get("http://a91991ed.ngrok.io/surveys/"+id);
+        return this.http.get("http://6b2de3db.ngrok.io/surveys/"+id);
     }
 
     getResponseData(){
-        return this.http.get("http://a91991ed.ngrok.io/test-responses");
+        return this.http.get("http://6b2de3db.ngrok.io/test-responses");
     }
 
-  public sendData(data){
+  public sendSurveyAnswers(data){
     this.httpOptions.params = {
       answers: JSON.stringify(data)
     };
@@ -56,7 +56,8 @@ export default class ApiService {
     }
 
     public insertResponseData(data){
-      return this.database.executeSql("INSERT INTO responses(response) VALUES(?)", [data])
+      let responses = JSON.stringify(data.body);
+      return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
     }
 
     public loadResponseData(surveyId){

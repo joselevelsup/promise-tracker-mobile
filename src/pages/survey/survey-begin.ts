@@ -35,7 +35,7 @@ export class SurveyBegin{
     }
 
     startSurvey(id){
-      this.navCtrl.setRoot("survey-detail", {
+      this.navCtrl.push("survey-detail", {
         id: id
       });
     }

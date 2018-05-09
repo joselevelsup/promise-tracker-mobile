@@ -1,3 +1,10 @@
 page-survey-detail {
-
+  .surveyTitle{
+    color: #66c6ba;
+    text-align: center;
+  }
+  
+  ion-slide.swiper-slide {
+    align-items: flex-start;
+  }
 }
