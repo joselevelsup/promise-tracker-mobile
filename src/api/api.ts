@@ -21,11 +21,11 @@ export default class ApiService {
   }
 
     public getSurveyData(id){
-        return this.http.get("http://6b2de3db.ngrok.io/surveys/"+id);
+        return this.http.get("http://74eaf3da.ngrok.io/surveys/"+id);
     }
 
     getResponseData(){
-        return this.http.get("http://6b2de3db.ngrok.io/test-responses");
+        return this.http.get("http://74eaf3da.ngrok.io/test-responses");
     }
 
   public sendSurveyAnswers(data){
@@ -65,7 +65,23 @@ export default class ApiService {
     }
 
     public insertFormData(data, code){
-        return this.database.executeSql("INSERT INTO surveys(id, title, survey_id, survey_code, form) VALUES (?, ?, ?, ?, ?)", [data.id, data.title, data.campaign_id, code, JSON.stringify(data.inputs)])
+        const self = this;
+        console.log(data.campaign_id);
+        return new Promise((resolve, reject) => {
+            self.database.executeSql(`SELECT survey_id FROM surveys where survey_id = ${data.campaign_id}`, {}).then((resp) => {
+                if(resp.rows.item(0) === undefined){
+                    self.database.executeSql("INSERT INTO surveys(id, title, survey_id, survey_code, form) VALUES (?, ?, ?, ?, ?)", [data.id, data.title, data.campaign_id, code, JSON.stringify(data.inputs)]).then((data) => {
+                        resolve(data);
+                    }).catch((err) => {
+                        reject(err);
+                    })
+                } else {
+                    resolve({ "exists": true });
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
     public loadLocalForms(){

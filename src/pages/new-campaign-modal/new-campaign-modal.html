@@ -31,6 +31,11 @@
         </form>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="msg">
+        <ion-col col-12>
+            <p class="center-text">{{msg}}</p>
+        </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col col-12>
         <div class="contain">

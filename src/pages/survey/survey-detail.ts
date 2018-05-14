@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, Slides } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Slides, AlertController } from 'ionic-angular';
 import { Geolocation } from "@ionic-native/geolocation";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import ApiService from "../../api/api";
@@ -19,7 +19,7 @@ export class SurveyDetailPage implements OnInit {
   answers: any = {};
   surveyId: any;
   @ViewChild("slides") slides: Slides;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera) {
+    constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera, private alertCtrl: AlertController) {
     this.answers = {
       image: null
     };
@@ -37,7 +37,6 @@ export class SurveyDetailPage implements OnInit {
       self.surveyId = data.rows.item(0).survey_id;
       let qs = JSON.parse(data.rows.item(0).form);
       let newSet = qs.sort((a, b) => a.order - b.order);
-      console.log(newSet);
       self.questions = newSet;
     }).catch((err) => {
       console.log(err);
@@ -90,8 +89,28 @@ export class SurveyDetailPage implements OnInit {
     });
   }
 
+    alertForHome(){
+        console.log("clicked");
+        const self = this;
+        let homeAlert = self.alertCtrl.create({
+            message: "Are you sure you want to delete this response? All data fro this response will be lost.",
+            buttons:
+            [{
+                text: "Cancel",
+                role: "cancel"
+            },{
+                text: "Delete",
+                handler: () => {
+                    self.navCtrl.setRoot("tabs");
+                }
+            }]
+        });
+
+        homeAlert.present();
+    }
+
   sendAnswers(){
-    console.log(this.answers);
+    
     // this.api.sendSurveyAnswers(this.answers).then(())
   }
 
@@ -101,7 +120,7 @@ export class SurveyDetailPage implements OnInit {
       body: this.answers
     };
     this.api.insertResponseData(resp).then((data) => {
-      console.log(data);
+        this.navCtrl.push("home-page");
     }).catch((err) => {
       console.log(err);
     })

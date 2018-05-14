@@ -6,7 +6,7 @@
 
 </ion-header>
 
-<ion-content padding>
+<ion-content padding no-bounce>
   <ion-grid>
     <ion-row>
       <ion-col col-12>
@@ -50,16 +50,23 @@
             <div *ngIf="q.input_type == 'text'">
               <ion-list>
                 <ion-item>
-                  <ion-input type="text" [(ngModel)]="answers[q.id]" placeholder="{{q.label}}"></ion-input>
+                  <ion-input type="text" [(ngModel)]="answers[q.id]"></ion-input>
                 </ion-item>
               </ion-list>
             </div>
             <div *ngIf="q.input_type == 'number'">
               <ion-list>
                 <ion-item>
-                  <ion-input type="number"></ion-input>
+                  <ion-input type="number" [(ngModel)]="answers[q.id]"></ion-input>
                 </ion-item>
               </ion-list>
+            </div>
+            <div *ngIf="q.input_type == 'date'">
+                <ion-list>
+                    <ion-item>
+                        <ion-datetime displayFormat="NN/DD/YYYY" [(ngModel)]="answers[q.id]"></ion-datetime>
+                    </ion-item>
+                </ion-list>
             </div>
             <div *ngIf="q.input_type == 'location'">
               <ion-list>
@@ -118,7 +125,7 @@
           </button>
         </ion-col>
         <ion-col col-4>
-          <button ion-button block icon-start color="dark" clear>
+            <button (click)="alertForHome()" ion-button block icon-start color="dark" clear>
             <ion-icon name="close"></ion-icon>
           </button>
         </ion-col>

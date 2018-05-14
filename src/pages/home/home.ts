@@ -32,9 +32,7 @@ export class HomePage {
       const self = this;
       let surveys = [];
         this.api.loadLocalForms().then((data) => {
-          console.log(data);
           for(var i = 0; i < data.rows.length; i++){
-            console.log(data.rows.item(i));
             surveys.push({
                 id: data.rows.item(i).id,
                 title: data.rows.item(i).title
@@ -57,6 +55,6 @@ export class HomePage {
       const self = this;
       setTimeout(() => {
         self.loadSurveys();
-      }, 3000);
+      }, 500);
     }
 }

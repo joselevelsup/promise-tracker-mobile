@@ -13,6 +13,7 @@ export class NewCampaignModalPage {
   code = {
     number: null
   };
+    msg: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private view: ViewController, private api: ApiService) {}
 
@@ -21,11 +22,16 @@ export class NewCampaignModalPage {
     self.api.getSurveyData(self.code.number).subscribe(
         (data : any) => {
             if(data.status == "success"){
-                self.api.insertFormData(data.payload, self.code.number).then((data) => {
-                  self.closeModal();
+                self.api.insertFormData(data.payload, self.code.number).then((resp : any) => {
+                    if(resp.exists){
+                        self.msg = "Survey Already Exists";
+                    } else {
+                        self.closeModal();
+                    }
                 }).catch((err) => {
                   console.log(err);
-                });
+                })
+                    ;
             }
 
       },

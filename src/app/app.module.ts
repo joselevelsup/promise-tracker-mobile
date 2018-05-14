@@ -45,7 +45,9 @@ import {
   imports: [
     BrowserModule,
     HttpClientModule,
-      IonicModule.forRoot(MyApp),
+      IonicModule.forRoot(MyApp, {
+          scrollAssist: false
+      }),
       IonicStorageModule.forRoot(),
       HomePageModule,
       NewCampaignModalPageModule,
