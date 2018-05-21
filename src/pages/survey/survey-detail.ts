@@ -2,6 +2,7 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, Slides, AlertController } from 'ionic-angular';
 import { Geolocation } from "@ionic-native/geolocation";
 import { Camera, CameraOptions } from "@ionic-native/camera";
+import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapOptions } from "@ionic-native/google-maps";
 import ApiService from "../../api/api";
 
 @IonicPage({
@@ -17,7 +18,9 @@ export class SurveyDetailPage implements OnInit {
   title: any;
   index: any;
   answers: any = {};
-  surveyId: any;
+    surveyId: any;
+
+    map: GoogleMap;
   @ViewChild("slides") slides: Slides;
     constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera, private alertCtrl: AlertController) {
     this.answers = {
@@ -70,6 +73,28 @@ export class SurveyDetailPage implements OnInit {
         lat: resp.coords.latitude,
         long: resp.coords.longitude
       };
+
+        let mapOptions : GoogleMapOptions = {
+            camera: {
+                target: {
+                    lat: self.answers.coords.lat,
+                    lng: self.answers.coords.long
+                },
+                zoom: 18
+            }
+        }
+        self.map = GoogleMaps.create("mapCanvas", mapOptions);
+        self.map.addMarker({
+            icon: "blue",
+            animation: "DROP",
+            position: {
+                lat: self.answers.coords.lat,
+                lng: self.answers.coords.long
+            }
+        }).then((marker: Marker) => {
+            marker.showInfoWindow()
+        });
+
     }).catch((err) => {
       console.log(err);
     })

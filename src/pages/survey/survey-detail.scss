@@ -7,4 +7,8 @@ page-survey-detail {
   ion-slide.swiper-slide {
     align-items: flex-start;
   }
+
+  #mapCanvas {
+      height: 250px;
+  }
 }

@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar hideBackButton="true">
+  <ion-navbar color="dark" hideBackButton="true">
     <ion-title>Promise Tracker</ion-title>
   </ion-navbar>
 
@@ -77,6 +77,7 @@
                   </button>
                 </ion-item>
               </ion-list>
+              <div id="mapCanvas"></div>
             </div>
             <div *ngIf="q.input_type == 'image'">
               <button (click)="openCamera()" ion-button block color="primary">

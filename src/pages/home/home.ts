@@ -55,6 +55,6 @@ export class HomePage {
       const self = this;
       setTimeout(() => {
         self.loadSurveys();
-      }, 500);
+      }, 1000);
     }
 }

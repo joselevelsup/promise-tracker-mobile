@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SQLite } from "@ionic-native/sqlite";
 import { Geolocation } from "@ionic-native/geolocation";
 import { Camera } from "@ionic-native/camera";
+import { GoogleMaps } from "@ionic-native/google-maps";
 import { IonicStorageModule } from "@ionic/storage";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 
@@ -75,6 +76,7 @@ import {
       Geolocation,
       AndroidPermissions,
       Camera,
+      GoogleMaps,
       ApiService,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

@@ -1,6 +1,6 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
+  <ion-navbar color="dark">
+    <ion-title class="text-center">
       Promise Tracker
     </ion-title>
   </ion-navbar>
@@ -22,10 +22,15 @@
     </ion-row>
     <ion-row>
       <ion-col col-12>
-        <ion-list>
-            <button ion-item *ngFor="let s of surveys" (click)="openSurvey(s.id)">
-                {{s.title}}
-            </button>
+          <ion-list>
+              <ion-item-sliding *ngFor="let s of surveys">
+                  <button ion-item (click)="openSurvey(s.id)">
+                      {{s.title}}
+                  </button>
+                  <ion-item-options side="right">
+                      <button ion-button color="danger" (click)="deleteSurvey(s.id)">Delete</button>
+                  </ion-item-options>
+              </ion-item-sliding>
         </ion-list>
       </ion-col>
     </ion-row>
