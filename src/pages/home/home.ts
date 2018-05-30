@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Modal, ModalController } from 'ionic-angular';
+import { App, IonicPage, NavController, Modal, ModalController } from 'ionic-angular';
+import { TranslateService } from "@ngx-translate/core";
 
 import ApiService from "../../api/api";
 import { NewCampaignModalPage } from "../new-campaign-modal/new-campaign-modal";
@@ -15,7 +16,7 @@ export class HomePage {
 
   surveys: any;
 
-    constructor(public navCtrl: NavController, private modal: ModalController, public api: ApiService) {}
+    constructor(public app: App, public navCtrl: NavController, private modal: ModalController, public api: ApiService, private translate: TranslateService) {}
 
     goToNewCampaignPage(){
       const self = this;
@@ -45,16 +46,19 @@ export class HomePage {
     }
 
     openSurvey(id){
-      this.navCtrl.push("survey-begin", {
+        this.app.getRootNavs()[0].setRoot("survey-begin", {
         "id": id
       });
     }
 
     //Loads after a certain amount of time. Can not open the DB immediately because Angular would read the DB object as undefined
     ionViewDidLoad(){
-      const self = this;
-      setTimeout(() => {
-        self.loadSurveys();
-      }, 1000);
+        const self = this;
+        this.api.getDbState().subscribe(ready => {
+            if(ready){
+                self.api.syncResponses();
+                self.loadSurveys();
+            }
+        });
     }
 }

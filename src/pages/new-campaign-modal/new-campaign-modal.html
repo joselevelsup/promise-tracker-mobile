@@ -2,7 +2,7 @@
 <ion-header>
 
   <ion-navbar color="dark">
-    <ion-title class="text-center">Campaign Code</ion-title>
+    <ion-title class="text-center">{{ 'CAMPAIGN_CODE' | translate }}</ion-title>
     <ion-buttons end>
       <button ion-button (click)="closeModal()"><ion-icon name="close"></ion-icon></button>
     </ion-buttons>
@@ -15,7 +15,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-12>
-        <h4 class="sub-title">Enter your campaign code below:</h4>
+        <h4 class="sub-title">{{ 'CAMPAIGN_CODE_PROMPT' | translate }}:</h4>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -23,23 +23,23 @@
         <form (ngSubmit)="getData()">
           <ion-list>
               <ion-item>
-                  <ion-label fixed>Survey Code</ion-label>
+                  <ion-label fixed>{{'CAMPAIGN_CODE' | translate}}</ion-label>
                   <ion-input [(ngModel)]="code.number" type="number" name="code"></ion-input>
               </ion-item>
           </ion-list>
-          <button ion-button color="primary" block type="submit">Download</button>
+          <button ion-button color="primary" block type="submit">{{'DOWNLOAD' | translate}}</button>
         </form>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="msg">
         <ion-col col-12>
-            <p class="center-text">{{msg}}</p>
+            <p class="center-text">{{'CAMPAIGN_EXISTS' | translate}}</p>
         </ion-col>
     </ion-row>
     <ion-row>
       <ion-col col-12>
         <div class="contain">
-          <p class="center-text">Every campaign has a code associated with it. Get the code from the campaign organizers or create your own campaign at monitor.promisetracker.org.</p>
+          <p class="center-text">{{'CODE_TIP' | translate}}</p>
         </div>
       </ion-col>
     </ion-row>

@@ -13,7 +13,7 @@ export class NewCampaignModalPage {
   code = {
     number: null
   };
-    msg: any;
+    msg: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private view: ViewController, private api: ApiService) {}
 
@@ -24,7 +24,7 @@ export class NewCampaignModalPage {
             if(data.status == "success"){
                 self.api.insertFormData(data.payload, self.code.number).then((resp : any) => {
                     if(resp.exists){
-                        self.msg = "Survey Already Exists";
+                        self.msg = true;
                     } else {
                         self.closeModal();
                     }

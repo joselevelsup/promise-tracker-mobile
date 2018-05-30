@@ -1,14 +1,17 @@
 import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { SQLite, SQLiteObject } from "@ionic-native/sqlite";
+import { BehaviorSubject } from "rxjs/Rx";
 
 @Injectable()
 export default class ApiService {
     database: SQLiteObject;
+    private dbReady : BehaviorSubject<boolean>;
     constructor(
         private http: HttpClient,
         private sqlite: SQLite
     ){
+        this.dbReady = new BehaviorSubject(false);
         this.dbSetup();
     }
 
@@ -32,12 +35,13 @@ export default class ApiService {
     this.httpOptions.params = {
       answers: JSON.stringify(data)
     };
-    return this.http.post("http://a91991ed.ngrok.io/test-responses", data, this.httpOptions);
+    return this.http.post("https://908b3c50.ngrok.io/test-responses", data, this.httpOptions);
   }
 
 
 
     private dbSetup(){
+        const self = this;
         return this.sqlite.create({
             name: "responses.db",
             location: "default"
@@ -50,14 +54,34 @@ export default class ApiService {
             }).catch((err) => {
                 console.log(err);
             });
-
-            this.database = db;
+            self.database = db;
+            self.dbReady.next(true);
         })
     }
 
     public insertResponseData(data){
+        // if(data.body.image.length > 1){
+        //     return this.database.executeSql("INSERT INTO images(location, synced, response_id) VALUES(?, ?, ?)", [])
+        // }
       let responses = JSON.stringify(data.body);
-      return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
+        return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
+            // .then((resp) => {
+            //     if(data.body.image.length > 1){
+            //         return this.database.executeSql("INSERT INTO images(location, synced, response_id) VALUES(?, ?, ?)", [data.body.image, 0, resp.rows.item(0).])
+            //     }
+            // }).catch((err) => {
+            //     console.log(err);
+            // })
+    }
+
+    public syncResponses(){
+        this.database.executeSql("SELECT * FROM responses WHERE synced = 0", {}).then((data: any) => {
+            for(let i = 0; i < data.rows.length; i++){
+                console.log(data.rows.item(i));
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     public loadResponseData(surveyId){
@@ -66,7 +90,6 @@ export default class ApiService {
 
     public insertFormData(data, code){
         const self = this;
-        console.log(data.campaign_id);
         return new Promise((resolve, reject) => {
             self.database.executeSql(`SELECT survey_id FROM surveys where survey_id = ${data.campaign_id}`, {}).then((resp) => {
                 if(resp.rows.item(0) === undefined){
@@ -90,6 +113,10 @@ export default class ApiService {
 
     public loadOneForm(id){
       return this.database.executeSql(`SELECT * FROM surveys WHERE id=${id}`, {});
+    }
+
+    public getDbState(){
+        return this.dbReady.asObservable();
     }
 
 }

@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar color="dark" hideBackButton="true">
-    <ion-title>Promise Tracker</ion-title>
+    <ion-title class="text-center">{{'APP_NAME' | translate}}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -17,8 +17,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-slides #slides [initialSlide]="1">
-    <ion-slide *ngFor="let q of questions">
+  <ion-slides #slides *ngIf="loaded" [initialSlide]="1">
+      <ion-slide *ngFor="let q of questions">
       <ion-grid>
         <ion-row>
           <ion-col col-12>
@@ -28,7 +28,7 @@
             <div *ngIf="q.input_type == 'select1'">
               <ion-list radio-group [(ngModel)]="answers[q.id]">
                 <ion-list-header>
-                  Select one:
+                  {{'CHOOSE_ONE' | translate}}:
                 </ion-list-header>
                 <ion-item *ngFor="let o of q.options" no-lines>
                   <ion-label>{{o}}</ion-label>
@@ -39,7 +39,7 @@
             <div *ngIf="q.input_type == 'select'">
               <ion-list [(ngModel)]="answers[q.id]">
                 <ion-list-header>
-                  Select all that apply:
+                  {{'CHOOSE_MANY' | translate}}:
                 </ion-list-header>
                 <ion-item *ngFor="let o of q.options">
                   <ion-label>{{o}}</ion-label>
@@ -62,18 +62,16 @@
               </ion-list>
             </div>
             <div *ngIf="q.input_type == 'date'">
-                <ion-list>
-                    <ion-item>
-                        <ion-datetime displayFormat="NN/DD/YYYY" [(ngModel)]="answers[q.id]"></ion-datetime>
-                    </ion-item>
-                </ion-list>
+                <ion-item>
+                    <ion-datetime displayFormat="MMM DD YYYY" [(ngModel)]="answers[q.id]"></ion-datetime>
+                </ion-item>
             </div>
             <div *ngIf="q.input_type == 'location'">
               <ion-list>
                 <ion-item>
                   <button (click)="getLocation()" ion-button block icon-start color="primary">
                     <ion-icon name="locate"></ion-icon>
-                    Get Current Location
+                    {{'GET_LOCATION' | translate}}
                   </button>
                 </ion-item>
               </ion-list>
@@ -81,7 +79,7 @@
             </div>
             <div *ngIf="q.input_type == 'image'">
               <button (click)="openCamera()" ion-button block color="primary">
-                Take a picture
+                {{'TAKE_PICTURE' | translate}}
               </button>
               <div class="image-container" *ngIf="answers.image != null || answers.image != 'undefined'">
                 <ion-img src="{{answers.image}}"></ion-img>
@@ -97,17 +95,17 @@
           <ion-col col-12>
             <p>
               <ion-icon name="checkmark-circle"></ion-icon>
-              All set!
+              {{'ALL_SET' | translate}}
             </p>
             <p>
-              You have Completed the Survey.
+                {{'RESPONSE_COMPLETE' | translate}}
             </p>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col col-12>
-            <button ion-button button-block (click)="sendAnswers()" color="secondary">Submit now</button>
-            <button ion-button button-block (click)="saveAnswers()" clear>Submit later</button>
+            <button ion-button button-block (click)="sendAnswers()" color="secondary">{{'SUBMIT_NOW' | translate}}</button>
+            <button ion-button button-block (click)="saveAnswers()" clear>{{'SUBMIT_LATER' | translate}}</button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -122,7 +120,7 @@
         <ion-col col-4>
           <button (click)="previousSlide()" ion-button block icon-start color="dark" clear>
             <ion-icon name="ios-arrow-back"></ion-icon>
-            Back
+            {{'BACK' | translate}}
           </button>
         </ion-col>
         <ion-col col-4>
@@ -132,7 +130,7 @@
         </ion-col>
         <ion-col col-4>
           <button (click)="nextSlide()" ion-button block icon-end color="primary">
-            Next
+            {{'NEXT' | translate}}
             <ion-icon name="ios-arrow-forward"></ion-icon>
           </button>
         </ion-col>

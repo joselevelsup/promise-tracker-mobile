@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { App, Platform, Events } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AndroidPermissions } from "@ionic-native/android-permissions";
+import { TranslateService } from "@ngx-translate/core";
 
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -13,10 +14,13 @@ export class MyApp {
     rootPage:any = TabsPage;
     public footerData: any;
 
-    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, androidPermissions: AndroidPermissions, public events: Events) {
+    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, androidPermissions: AndroidPermissions, public translateService: TranslateService) {
+        const lang = navigator.language.split("-")[0];
     platform.ready().then(() => {
       statusBar.styleDefault();
-      splashScreen.hide();
+        splashScreen.hide();
+        translateService.setDefaultLang(lang);
+        translateService.use(lang);
       let permissions = [
         androidPermissions.PERMISSION.ACCESS_COARSE_LOCATION,
         androidPermissions.PERMISSION.CAMERA
@@ -31,10 +35,6 @@ export class MyApp {
           androidPermissions.requestPermission(p);
         });
       });
-    });
-
-    events.subscribe("footerData", (data) => {
-      this.footerData = data;
     });
 
   }

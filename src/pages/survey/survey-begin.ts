@@ -35,8 +35,12 @@ export class SurveyBegin{
     }
 
     startSurvey(id){
-      this.navCtrl.push("survey-detail", {
+      this.navCtrl.setRoot("survey-detail", {
         id: id
       });
+    }
+
+    backHome(){
+        this.navCtrl.setRoot("tabs");
     }
 }

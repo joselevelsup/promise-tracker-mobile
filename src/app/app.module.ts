@@ -10,13 +10,16 @@ import {
 } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { SQLite } from "@ionic-native/sqlite";
 import { Geolocation } from "@ionic-native/geolocation";
 import { Camera } from "@ionic-native/camera";
 import { GoogleMaps } from "@ionic-native/google-maps";
 import { IonicStorageModule } from "@ionic/storage";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
+
 
 import ApiService from "../api/api";
 
@@ -39,6 +42,10 @@ import {
     SurveyEndModule
 } from "../pages/survey";
 
+export function createTranslateFactory(http: HttpClient){
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 @NgModule({
   declarations: [
       MyApp
@@ -48,6 +55,13 @@ import {
     HttpClientModule,
       IonicModule.forRoot(MyApp, {
           scrollAssist: false
+      }),
+      TranslateModule.forRoot({
+          loader: {
+              provide: TranslateLoader,
+              useFactory: (createTranslateFactory),
+              deps: [HttpClient]
+          }
       }),
       IonicStorageModule.forRoot(),
       HomePageModule,

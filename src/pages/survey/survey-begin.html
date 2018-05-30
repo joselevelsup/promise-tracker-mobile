@@ -1,6 +1,6 @@
 <ion-header>
     <ion-navbar color="dark" hideBackButton="true">
-        <ion-title class="text-center">Promise Tracker</ion-title>
+        <ion-title class="text-center">{{ 'APP_NAME' | translate }}</ion-title>
     </ion-navbar>
 </ion-header>
 
@@ -20,7 +20,7 @@
       </ion-col>
       <ion-col col-8>
         <div class="campaign-container">
-          <h5>Campaign code:</h5>
+          <h5>{{'CAMPAIGN_CODE' | translate}}:</h5>
           <span>{{surveyData.code}}</span>
         </div>
       </ion-col>
@@ -31,20 +31,35 @@
     <ion-row>
       <ion-col col-12>
         <ion-item no-lines>
-          <ion-label>Allow my location to be recorded</ion-label>
+          <ion-label>{{'LOCATION_CONSENT' | translate}}</ion-label>
           <ion-checkbox color="primary" checked="false" [(ngModel)]="location"></ion-checkbox>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col col-12>
-        <button ion-button color="primary" block (click)="startSurvey(surveyData.id)"> Start Survey</button>
+        <button ion-button color="primary" block (click)="startSurvey(surveyData.id)"> {{'START_RESPONSE' | translate}}</button>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
+
 <ion-footer>
-  <ion-toolbar>
-    <ion-title>Footer</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-grid>
+            <ion-row>
+                <ion-col col-4>
+                    <br/>
+                </ion-col>
+                <ion-col col-4>
+                    <button (click)="backHome()" ion-button block icon-start color="dark" clear>
+                        <ion-icon name="close"></ion-icon> {{'CANCEL' | translate}}
+                    </button>
+                </ion-col>
+                <ion-col col-4>
+                    <br/>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-toolbar>
 </ion-footer>

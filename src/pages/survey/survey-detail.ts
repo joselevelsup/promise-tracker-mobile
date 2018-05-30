@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, Slides, AlertController } from 'io
 import { Geolocation } from "@ionic-native/geolocation";
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapOptions } from "@ionic-native/google-maps";
+import { TranslateService } from "@ngx-translate/core";
+
 import ApiService from "../../api/api";
 
 @IonicPage({
@@ -17,19 +19,29 @@ export class SurveyDetailPage implements OnInit {
   questions: any;
   title: any;
   index: any;
-  answers: any = {};
+    answers: any = {};
+    loaded: boolean = false;
     surveyId: any;
 
     map: GoogleMap;
-  @ViewChild("slides") slides: Slides;
-    constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera, private alertCtrl: AlertController) {
+    @ViewChild("slides") slides: Slides;
+    cancel: string;
+    del: string;
+    cameraError: boolean;
+    mapError: boolean;
+    surveyAnswersGood: boolean;
+    surveyAnswersErr: boolean;
+
+    constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera, private alertCtrl: AlertController, private translate: TranslateService) {
     this.answers = {
       image: null
     };
   }
 
-  ngOnInit(){
-    this.slides.lockSwipes(true);
+    ngOnInit(){
+        setTimeout(() => {
+            this.slides.lockSwipes(true);
+        }, 500);
   }
 
   ionViewWillLoad() {
@@ -40,7 +52,10 @@ export class SurveyDetailPage implements OnInit {
       self.surveyId = data.rows.item(0).survey_id;
       let qs = JSON.parse(data.rows.item(0).form);
       let newSet = qs.sort((a, b) => a.order - b.order);
-      self.questions = newSet;
+        self.questions = newSet;
+        setTimeout(() => {
+            self.loaded = true;
+        }, 400);
     }).catch((err) => {
       console.log(err);
     })
@@ -96,7 +111,7 @@ export class SurveyDetailPage implements OnInit {
         });
 
     }).catch((err) => {
-      console.log(err);
+        self.mapError = true;
     })
   }
 
@@ -110,21 +125,24 @@ export class SurveyDetailPage implements OnInit {
     this.camera.getPicture(opts).then((imageData) => {
       self.answers.image = imageData;
     }).catch((err) => {
-      console.log(err);
+        self.cameraError = true;
     });
   }
 
     alertForHome(){
-        console.log("clicked");
         const self = this;
+        self.translate.get(['DELETE', 'CANCEL']).subscribe((resp: any) => {
+            self.del = resp.DELETE;
+            self.cancel = resp.CANCEL;
+        });
         let homeAlert = self.alertCtrl.create({
             message: "Are you sure you want to delete this response? All data fro this response will be lost.",
             buttons:
             [{
-                text: "Cancel",
+                text: self.cancel,
                 role: "cancel"
             },{
-                text: "Delete",
+                text: self.del,
                 handler: () => {
                     self.navCtrl.setRoot("tabs");
                 }
@@ -134,9 +152,16 @@ export class SurveyDetailPage implements OnInit {
         homeAlert.present();
     }
 
-  sendAnswers(){
-    
-    // this.api.sendSurveyAnswers(this.answers).then(())
+    sendAnswers(){
+        const self = this;
+      this.api.sendSurveyAnswers(this.answers).subscribe(
+          data => {
+              self.navCtrl.setRoot("tabs");
+          },
+          err => {
+              self.saveAnswers();
+          }
+      )
   }
 
   saveAnswers(){
@@ -144,8 +169,9 @@ export class SurveyDetailPage implements OnInit {
       surveyId: this.surveyId,
       body: this.answers
     };
-    this.api.insertResponseData(resp).then((data) => {
-        this.navCtrl.push("home-page");
+      this.api.insertResponseData(resp).then((data) => {
+          console.log(data)
+        this.navCtrl.setRoot("tabs");
     }).catch((err) => {
       console.log(err);
     })
