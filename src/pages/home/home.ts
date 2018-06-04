@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ApplicationRef } from '@angular/core';
 import { App, IonicPage, NavController, Modal, ModalController } from 'ionic-angular';
 import { TranslateService } from "@ngx-translate/core";
+import { Network } from "@ionic-native/network";
 
 import ApiService from "../../api/api";
 import { NewCampaignModalPage } from "../new-campaign-modal/new-campaign-modal";
@@ -14,9 +15,26 @@ import { NewCampaignModalPage } from "../new-campaign-modal/new-campaign-modal";
 })
 export class HomePage {
 
-  surveys: any;
+    surveys: any;
+    connection: boolean;
 
-    constructor(public app: App, public navCtrl: NavController, private modal: ModalController, public api: ApiService, private translate: TranslateService) {}
+    constructor(public app: App, public navCtrl: NavController, private modal: ModalController, public api: ApiService, private translate: TranslateService, private network: Network, private appRef: ApplicationRef) {
+        this.network.onConnect().subscribe(() => {
+                    // We just got a connection but we need to wait briefly
+                    // before we determine the connection type. Might need to wait.
+                    // prior to doing any api requests as well.
+            setTimeout(() => {
+                console.log("something");
+                        if(this.network.type !== 'none') {
+                            this.connection = true;
+                            appRef.tick();
+                        } else{
+                            this.connection = true;
+                            appRef.tick();
+                        }
+                    }, 3000);
+        });
+    }
 
     goToNewCampaignPage(){
       const self = this;
@@ -51,13 +69,15 @@ export class HomePage {
       });
     }
 
-    //Loads after a certain amount of time. Can not open the DB immediately because Angular would read the DB object as undefined
     ionViewDidLoad(){
         const self = this;
         this.api.getDbState().subscribe(ready => {
             if(ready){
-                self.api.syncResponses();
                 self.loadSurveys();
+                console.log(self.connection);
+                if(self.connection == true){
+                    console.log("connected");
+                }
             }
         });
     }

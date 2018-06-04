@@ -60,18 +60,14 @@ export default class ApiService {
     }
 
     public insertResponseData(data){
-        // if(data.body.image.length > 1){
-        //     return this.database.executeSql("INSERT INTO images(location, synced, response_id) VALUES(?, ?, ?)", [])
-        // }
-      let responses = JSON.stringify(data.body);
-        return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
-            // .then((resp) => {
-            //     if(data.body.image.length > 1){
-            //         return this.database.executeSql("INSERT INTO images(location, synced, response_id) VALUES(?, ?, ?)", [data.body.image, 0, resp.rows.item(0).])
-            //     }
-            // }).catch((err) => {
-            //     console.log(err);
-            // })
+        let responses = JSON.stringify(data.body);
+        if(data.body.image == null){
+            return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0])
+        } else {
+            return this.database.executeSql("INSERT INTO responses(body, survey_id, synced) VALUES(?, ?, ?)", [responses, data.surveyId, 0]).then((resp) => {
+                return this.database.executeSql("INSERT INTO images(location, synced, response_id) VALUES(?, ?, ?)", [data.body.image, 0, resp.insertId]);
+            })
+        }
     }
 
     public syncResponses(){

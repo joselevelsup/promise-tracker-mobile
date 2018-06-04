@@ -156,10 +156,12 @@ export class SurveyDetailPage implements OnInit {
         const self = this;
       this.api.sendSurveyAnswers(this.answers).subscribe(
           data => {
-              self.navCtrl.setRoot("tabs");
+              console.log(data);
+              //self.navCtrl.setRoot("tabs");
           },
           err => {
-              self.saveAnswers();
+              console.log(err);
+              //self.saveAnswers();
           }
       )
   }
