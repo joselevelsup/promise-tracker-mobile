@@ -20,6 +20,8 @@ import { GoogleMaps } from "@ionic-native/google-maps";
 import { IonicStorageModule } from "@ionic/storage";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { Network } from "@ionic-native/network";
+import { File } from "@ionic-native/file";
+import { FileTransfer } from "@ionic-native/file-transfer";
 
 import ApiService from "../api/api";
 
@@ -92,6 +94,8 @@ export function createTranslateFactory(http: HttpClient){
       Camera,
       GoogleMaps,
       Network,
+      File,
+      FileTransfer,
       ApiService,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

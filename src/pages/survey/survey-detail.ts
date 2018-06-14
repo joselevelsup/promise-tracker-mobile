@@ -33,16 +33,17 @@ export class SurveyDetailPage implements OnInit {
     surveyAnswersErr: boolean;
 
     constructor(public navCtrl: NavController, public navParams: NavParams, public api: ApiService, private geolocation: Geolocation, private camera: Camera, private alertCtrl: AlertController, private translate: TranslateService) {
-    this.answers = {
-      image: null
-    };
-  }
+        this.answers = {
+            image: {}
+        };
+    }
 
     ngOnInit(){
         setTimeout(() => {
+            this.slides.slideTo(this.slides.getActiveIndex() - 1);
             this.slides.lockSwipes(true);
-        }, 500);
-  }
+        }, 1000);
+    }
 
   ionViewWillLoad() {
     const self = this;
@@ -115,7 +116,7 @@ export class SurveyDetailPage implements OnInit {
     })
   }
 
-  openCamera(){
+  openCamera(inputId){
     const self = this;
     const opts: CameraOptions = {
       quality: 100,
@@ -123,7 +124,10 @@ export class SurveyDetailPage implements OnInit {
     };
 
     this.camera.getPicture(opts).then((imageData) => {
-      self.answers.image = imageData;
+        self.answers.image = {
+            file: imageData,
+            input_id: inputId
+        };
     }).catch((err) => {
         self.cameraError = true;
     });
@@ -154,17 +158,12 @@ export class SurveyDetailPage implements OnInit {
 
     sendAnswers(){
         const self = this;
-      this.api.sendSurveyAnswers(this.answers).subscribe(
-          data => {
-              console.log(data);
-              //self.navCtrl.setRoot("tabs");
-          },
-          err => {
-              console.log(err);
-              //self.saveAnswers();
-          }
-      )
-  }
+        this.api.sendSurveyAnswers(this.answers, this.surveyId).then((resp) => {
+            console.log(resp);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
   saveAnswers(){
     let resp = {

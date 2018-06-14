@@ -78,11 +78,11 @@
               <div id="mapCanvas"></div>
             </div>
             <div *ngIf="q.input_type == 'image'">
-              <button (click)="openCamera()" ion-button block color="primary">
+              <button (click)="openCamera(q.id)" ion-button block color="primary">
                 {{'TAKE_PICTURE' | translate}}
               </button>
               <div class="image-container" *ngIf="answers.image != null || answers.image != 'undefined'">
-                <ion-img src="{{answers.image}}"></ion-img>
+                <ion-img src="{{answers.image.file}}"></ion-img>
               </div>
             </div>
           </ion-col>

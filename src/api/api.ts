@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { SQLite, SQLiteObject } from "@ionic-native/sqlite";
 import { BehaviorSubject } from "rxjs/Rx";
+import { File } from "@ionic-native/file";
+import { FileTransfer, FileTransferObject, FileUploadOptions } from "@ionic-native/file-transfer";
 
 @Injectable()
 export default class ApiService {
@@ -9,7 +11,9 @@ export default class ApiService {
     private dbReady : BehaviorSubject<boolean>;
     constructor(
         private http: HttpClient,
-        private sqlite: SQLite
+        private sqlite: SQLite,
+        private file: File,
+        private transfer: FileTransfer
     ){
         this.dbReady = new BehaviorSubject(false);
         this.dbSetup();
@@ -24,19 +28,52 @@ export default class ApiService {
   }
 
     public getSurveyData(id){
-        return this.http.get("http://74eaf3da.ngrok.io/surveys/"+id);
+        return this.http.get("http://0e8f9db0.ngrok.io/surveys/"+id);
     }
 
     getResponseData(){
-        return this.http.get("http://74eaf3da.ngrok.io/test-responses");
+        return this.http.get("http://74eaf3da.ngrok.io/responses");
     }
 
-  public sendSurveyAnswers(data){
-    this.httpOptions.params = {
-      answers: JSON.stringify(data)
-    };
-    return this.http.post("https://908b3c50.ngrok.io/test-responses", data, this.httpOptions);
-  }
+    public sendSurveyAnswers(answers, surveyId){
+        const self = this;
+        console.log(answers);
+        let copyAnswers = {...answers};
+        delete copyAnswers["image"];
+        const fileTransfer : FileTransferObject = this.transfer.create();
+        let fileOptions: FileUploadOptions = {
+            fileKey: 'file',
+            fileName: 'image',
+            mimeType: "image/jpeg",
+            headers: {
+                'Authorization': "85823f6d6a9167b1ff947a18b176c09a"
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            self.httpOptions.params = {
+                answers: JSON.stringify(copyAnswers)
+            };
+
+            self.http.post("http://0e8f9db0.ngrok.io/responses", answers, self.httpOptions).subscribe(
+                (resp: any) => {
+                    fileOptions.params = {
+                        id: resp.payload.id,
+                        input_id: answers.image.input_id
+                    };
+
+                    fileTransfer.upload(answers.image.file, "http://0e8f9db0.ngrok.io/upload_image", fileOptions).then((success) => {
+                        resolve(success);
+                    }).catch((err) => {
+                        reject(err);
+                    })
+                },
+                (err) => {
+                    reject(err);
+                }
+            )
+        })
+    }
 
 
 
